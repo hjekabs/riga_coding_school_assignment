@@ -15,6 +15,7 @@ SSL_PORT = 993
 SSL_HOST = "imap.gmail.com"
 IN_FILE_DIRECTORY = "/Users/jekabs/python-course/FINAL_PROJECT/infiles"
 OUT_FILE_DIRECTORY = "/Users/jekabs/python-course/FINAL_PROJECT/outfiles"
+SEND_TO_EMAIL = "jekabs.demo@gmail.com"
 #####################
 
 def download_email_attachments(ssl_host, ssl_port, username, password, download_path):
@@ -76,7 +77,7 @@ def create_csv_report(infile, in_file_directory, out_file_directory):
         for stock in stock_profits:
             csv_writer.writerow(stock)
 
-def send_report_email(username, password, out_file_directory):
+def send_report_email(username, password, send_to, out_file_directory):
     csv_files = get_csv_files(out_file_directory)
     msg = MIMEMultipart()
     for csv in csv_files:
@@ -94,8 +95,8 @@ def send_report_email(username, password, out_file_directory):
         server.ehlo()
         server.starttls()
         server.login(username, password)
-        server.sendmail(username, username, msg.as_string())
-        # ...send emails
+        server.sendmail(username, send_to, msg.as_string())
+        print(f"E-mail has been sent to {username}")
     except Exception as ex:
         print("Failed to send email")
         print(ex)
@@ -111,7 +112,7 @@ for csv_file in csv_file_list:
     print(f"Profit report for file {csv_file} - SUCCESS")
     print("-"*10)
 
-send_report_email(MY_USERNAME, MY_PASSWORD, OUT_FILE_DIRECTORY)
+send_report_email(MY_USERNAME, MY_PASSWORD, SEND_TO_EMAIL, OUT_FILE_DIRECTORY)
 
 
 
